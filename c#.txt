@@ -1,0 +1,88 @@
+Form2 texteditor = new Form2();
+            texteditor.MdiParent = this;
+            texteditor.Show();
+
+string dateiname;
+            //openFileDialog1.Filter = "Textdateien|*.txt";
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                
+                dateiname = openFileDialog1.FileName;
+                this.Name =dateiname;
+                System.IO.StreamReader sr = new
+                System.IO.StreamReader(dateiname);
+                richTextBox1.Text = sr.ReadToEnd();
+            }
+
+private void toolStripMenuItem3_Click(object sender, EventArgs e)
+        {
+            //saveFileDialog1.Filter = ".rtf(Richtext file)|*.rtf";
+            saveFileDialog1.FileName = this.Name;
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK) 
+            {
+                StreamWriter writer = new StreamWriter(saveFileDialog1.FileName);
+                writer.Write(richTextBox1.Rtf);
+                writer.Close();
+            }
+            
+
+        }
+
+//=
+            string rechnung=textBox1.Text;
+            DataTable dt = new DataTable();
+            double answer = (double)dt.Compute(rechnung,"");
+            label1.Text = answer.ToString();
+
+
+Rechnen Automat = new Rechnen();
+
+            double betrag = Convert.ToDouble(textBox1.Text);
+
+            listBox1.Items.Clear();
+
+            if (betrag > 0)
+            {
+
+                string[] ausgabe = new string[Automat.wechseln(betrag).Length];
+                ausgabe = Automat.wechseln(betrag);
+                foreach (string a in ausgabe)
+                { listBox1.Items.Add(a); }
+
+
+            }
+            else
+            {
+                listBox1.Items.Add("Bitte Packen sie geld in den Automat");
+            }
+
+internal class Rechnen
+    {
+
+        public string[] wechseln(double betrag)
+        {
+
+            double[] type = new double[] { 2, 1, 0.50, 0.20, 0.10, 0.05, 0.02, 0.01 };
+            string carry = "";
+            for (int i = 0; i < type.Length; i++)
+            {
+                int münzenanzahl = 0;
+                while (betrag >= type[i])
+                {
+                    münzenanzahl++;
+                    betrag -= type[i];
+                }
+                if (münzenanzahl > 0)
+                {
+                    carry += Convert.ToString(münzenanzahl + "mal die" + type[i] + "€ Münze\n");
+                }
+
+
+
+            }
+            string[] ausgabe = new string[carry.Split('\n').Length];
+            ausgabe = carry.Split('\n');
+            return ausgabe;
+        }
+
+    }
